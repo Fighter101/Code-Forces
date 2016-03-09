@@ -1,0 +1,59 @@
+#include<iostream>
+#include<queue>
+#include<vector>
+#include<functional>
+#include<fstream>
+using namespace std;
+int n;
+vector<pair<int, int> >adj_list[105];
+vector<int>dijkstra(int node)
+{
+	vector<int>sp(n, -1);
+	priority_queue < pair<int, int>, vector<pair<int, int> >, greater<pair<int,int> > > q;
+	q.push(make_pair(0, node));
+	while (!q.empty())
+	{
+		int parent = q.top().second;
+		int cost = q.top().first;
+		q.pop();
+		if (sp[parent] != -1)
+			continue;
+		sp[parent] = cost;
+		for (int i = 0; i < adj_list[parent].size(); i++)
+		{
+			int child = adj_list[parent][i].second;
+			if (sp[child] == -1)
+				q.push(make_pair(cost+adj_list[parent][i].first, child));
+		}
+	}
+	return sp;
+}
+int main()
+{
+	int N;
+	cin >> N;
+	while (N--)
+	{
+		int e, t;
+		long long m;
+		cin >> n >> e >> t >> m;
+		for (int i =0;i < n;i++)
+			adj_list[i].clear();
+		for (int i = 0; i < m; i++)
+		{
+			int x, y, w;
+			cin >> x >> y >> w;
+			adj_list[x - 1].push_back(make_pair(w, y - 1));
+		}
+		int answer = 0;
+		vector<int>sp = dijkstra(e-1);
+		for (int i = 0;i < n;i++)
+		{
+			if (sp[i] >= t)
+				answer++;
+		}
+
+		cout << answer << endl<<endl;
+	}
+
+}
